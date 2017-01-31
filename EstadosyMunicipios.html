@@ -1,0 +1,98 @@
+<!DOCTYPE >
+    <html>
+    <head>
+	    <title>Estados y municipios</title>
+	
+        <!-- JQuery-->
+		<link rel="stylesheet" href="C:\Users\Antonio\Documents\Aplicaciones 2\bootstrap\dist\css\bootstrap.min.css"></link> 
+		<script type="text/javascript" src="jquery\dist\jquery.min.js"></script>
+		<script type="text/javascript" src="bootstrap\dist\js\bootstrap.min.js"></script>
+			
+			<style>
+				body{
+
+					 background-color: blue;
+				}
+			</style>
+
+
+    </head>
+    <body>
+    <div class="form-group container"> 
+	<div class="panel panel-info">
+      	<div class="panel-heading">Estados y municipios</div>
+      	<div class="panel-body">
+      	
+			 	<select name="sltEstados" class="btn btn-primary" id="sltEstados"> </select>
+		    	<select name="sltMunicipios" class="btn btn-primary" id="sltMunicipios"> </select>
+
+      	</div>
+    </div>
+	</div>
+   
+    
+
+    </body>
+
+    </html>
+
+    <script>	
+
+    llenarSelect();
+
+    	function llenarSelect(){
+			
+ 					$.ajax({
+						url: 'http://localhost:49200/Estados/Index',
+						type: 'GET',
+						dataType:'JSON',
+						success: function(result,status,xhr){
+							
+							estado = result;
+							
+								$(estado).each(function () {
+			                        var option = $(document.createElement('option'));
+
+			                        option.text(this.nombreEstado);
+			                        option.val(this.estadoID);
+
+			                        $("#sltEstados").append(option);
+		                  		  });
+								
+							
+
+							
+						},
+						error: function(xhr,status,error){
+							alert('el servidor no esta conectado');
+						},
+					});
+			}
+
+		$('#sltEstados').change(function(){
+				$.ajax({
+				url:'http://localhost:49200/Estados/Municipios',
+	 			type:'GET',
+	 			dataType:'JSON', 
+	 			data:{id:$(this).val()},
+	 			success: function(result,status,xhr){
+	 				municipios=result;
+	 				$('#sltMunicipios').children().remove();
+	 				
+	 				$(municipios).each(function(){
+		 				var option=$(document.createElement('option'));
+		 				option.text(this.nombreMunicipio);
+		 				option.val(this.municipioID);
+		 				$("#sltMunicipios").append(option);});
+	 			
+	 			},
+	 			error: function(xhr,status,error){
+							alert('No se conecto al servidor');
+						},
+			  });
+
+			}); 
+
+		
+
+    </script>
